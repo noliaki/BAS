@@ -1,18 +1,33 @@
 import * as Three from 'three'
-import * as Bas from 'three-bas'
+import ThreeBase from './ThreeBase'
+import Particle from './Particle'
+import { TweenLite } from 'gsap/TweenLite'
 
-const prefabCount: number = 10000
-const prefabGeometry: Three.TetrahedronGeometry = new Three.TetrahedronGeometry(
-  1.0
+const threeBase = new ThreeBase()
+const particle = new Particle()
+
+const light = new Three.DirectionalLight(0xff00ff)
+const light2 = new Three.DirectionalLight(0x00ffff)
+light2.position.y = -1
+
+threeBase.addToScene(light)
+threeBase.addToScene(light2)
+threeBase.addToScene(particle)
+
+const obj = {
+  time: 0
+}
+
+TweenLite.fromTo(
+  obj,
+  10,
+  {
+    time: 0
+  },
+  {
+    time: 1.5,
+    onUpdate() {
+      particle.material.uniforms.uTime.value = obj.time
+    }
+  }
 )
-const geometry: Bas.PrefabBufferGeometry = new Bas.PrefabBufferGeometry(
-  prefabGeometry,
-  prefabCount
-)
-
-const aStartPosition = geometry.createAttribute('aStartPosition', 3)
-const aEndPosition = geometry.createAttribute('aEndPosition', 3)
-const aDelayDuration = geometry.createAttribute('aDelayDuration', 2)
-
-const duration: number = 1.0
-const maxPrefabDelay: number = 0.5

@@ -6,6 +6,7 @@ export default class ThreeBase {
   private camera: Three.PerspectiveCamera
   private renderer: Three.WebGLRenderer
   private controls: OrbitControls
+  private timerId: number
 
   constructor() {
     this.scene = new Three.Scene()
@@ -24,5 +25,38 @@ export default class ThreeBase {
     })
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+
+    window.addEventListener('resize', event => {
+      if (this.timerId) {
+        clearTimeout(this.timerId)
+      }
+
+      this.timerId = setTimeout(() => {
+        this.setSize()
+      }, 300)
+    })
+
+    this.setSize()
+    this.tick()
+  }
+
+  addToScene(obj) {
+    this.scene.add(obj)
+  }
+
+  render() {
+    this.renderer.render(this.scene, this.camera)
+  }
+
+  tick() {
+    this.controls.update()
+    this.render()
+    requestAnimationFrame(() => {
+      this.tick()
+    })
+  }
+
+  setSize() {
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 }
