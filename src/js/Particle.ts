@@ -6,51 +6,43 @@ export default class Particle extends Three.Mesh {
 
   constructor({ count = 100000 } = {}) {
     const prefabCount = count
-    const prefabGeometry = new Three.CylinderGeometry()
+    const prefabGeometry = new Three.ConeGeometry()
     const geometry = new Bas.PrefabBufferGeometry(prefabGeometry, prefabCount)
 
     const aDelayDuration = geometry.createAttribute('aDelayDuration', 2)
     const duration = 1.0
     const maxPrefabDelay = 0.5
-    const totalDuration = duration + maxPrefabDelay
 
-    for (let i = 0, offset = 0; i < prefabCount; i++) {
-      const delay = Math.random() * maxPrefabDelay
-
-      for (let j = 0, len = prefabGeometry.vertices.length; j < len; j++) {
-        aDelayDuration.array[offset + 0] = delay
-        aDelayDuration.array[offset + 1] = duration
-
-        offset += 2
-      }
-    }
-
+    const axis = new Three.Vector3()
     const aStartPosition = geometry.createAttribute('aStartPosition', 3)
     const aEndPosition = geometry.createAttribute('aEndPosition', 3)
 
-    const startPosition = new Three.Vector3()
-    const endPosition = new Three.Vector3()
     const range = 400
-    const prefabData = []
 
     for (let i = 0; i < prefabCount; i++) {
-      startPosition.x = Three.Math.randFloatSpread(range) - range * 0.5
-      startPosition.y = Three.Math.randFloatSpread(range)
-      startPosition.z = Three.Math.randFloatSpread(range)
+      geometry.setPrefabData(aStartPosition, i, [
+        Three.Math.randFloatSpread(range) - range * 0.5,
+        Three.Math.randFloatSpread(range),
+        Three.Math.randFloatSpread(range)
+      ])
+      geometry.setPrefabData(aEndPosition, i, [
+        Three.Math.randFloatSpread(range) + range * 0.5,
+        Three.Math.randFloatSpread(range),
+        Three.Math.randFloatSpread(range)
+      ])
 
-      endPosition.x = Three.Math.randFloatSpread(range) + range * 0.5
-      endPosition.y = Three.Math.randFloatSpread(range)
-      endPosition.z = Three.Math.randFloatSpread(range)
+      // const delay = Math.random() * maxPrefabDelay
 
-      geometry.setPrefabData(
-        aStartPosition,
-        i,
-        startPosition.toArray(prefabData)
-      )
-      geometry.setPrefabData(aEndPosition, i, endPosition.toArray(prefabData))
+      for (
+        let j = 0,
+          len = prefabGeometry.vertices.length * aDelayDuration.itemSize;
+        j < len;
+        j += aDelayDuration.itemSize
+      ) {
+        aDelayDuration.array[len * i + j + 0] = Math.random() * maxPrefabDelay
+        aDelayDuration.array[len * i + j + 1] = duration
+      }
     }
-
-    const axis = new Three.Vector3()
 
     geometry.createAttribute('aAxisAngle', 4, data => {
       axis.x = Three.Math.randFloatSpread(2)
@@ -64,7 +56,7 @@ export default class Particle extends Three.Mesh {
     const material = new Bas.StandardAnimationMaterial({
       flatShading: true,
       uniforms: {
-        uTime: { value: 1.0 }
+        uTime: { value: 0 }
       },
       uniformValues: {
         metalness: 0.5,

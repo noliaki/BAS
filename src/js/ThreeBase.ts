@@ -14,7 +14,7 @@ export default class ThreeBase {
       45,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      10000
     )
     this.camera.lookAt(this.scene.position)
     this.camera.position.z = 100
