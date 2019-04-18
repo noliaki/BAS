@@ -1,12 +1,16 @@
 import * as Three from 'three'
 import * as Bas from 'three-bas'
 
+import vertexParameters from './glsl/vertexParameters.vert'
+import vertexInit from './glsl/vertexInit.vert'
+import vertexPosition from './glsl/vertexPosition.vert'
+
 export default class Particle extends Three.Mesh {
   public material: any
 
-  constructor({ count = 100000 } = {}) {
+  constructor({ count = 50000 } = {}) {
     const prefabCount = count
-    const prefabGeometry = new Three.ConeGeometry()
+    const prefabGeometry = new Three.DodecahedronGeometry()
     const geometry = new Bas.PrefabBufferGeometry(prefabGeometry, prefabCount)
 
     const aDelayDuration = geometry.createAttribute('aDelayDuration', 2)
@@ -20,18 +24,25 @@ export default class Particle extends Three.Mesh {
     const range = 400
 
     for (let i = 0; i < prefabCount; i++) {
+      const angle = (Math.random() * 360 * Math.PI) / 180
+      const r = Three.Math.randFloat(0, range)
+
       geometry.setPrefabData(aStartPosition, i, [
-        Three.Math.randFloatSpread(range) - range * 0.5,
-        Three.Math.randFloatSpread(range),
-        Three.Math.randFloatSpread(range)
-      ])
-      geometry.setPrefabData(aEndPosition, i, [
-        Three.Math.randFloatSpread(range) + range * 0.5,
-        Three.Math.randFloatSpread(range),
-        Three.Math.randFloatSpread(range)
+        r * Math.cos(angle),
+        r * Math.sin(angle),
+        0
       ])
 
-      // const delay = Math.random() * maxPrefabDelay
+      const latitude = (Math.random() * 360 * Math.PI) / 180
+      const longitude = (Math.random() * 360 * Math.PI) / 180
+
+      geometry.setPrefabData(aEndPosition, i, [
+        -r * Math.cos(latitude) * Math.cos(longitude),
+        r * Math.sin(latitude),
+        r * Math.cos(latitude) * Math.sin(longitude)
+      ])
+
+      const delay = Math.random() * maxPrefabDelay
 
       for (
         let j = 0,
@@ -55,6 +66,7 @@ export default class Particle extends Three.Mesh {
 
     const material = new Bas.StandardAnimationMaterial({
       flatShading: true,
+      vertexColors: Three.VertexColors,
       uniforms: {
         uTime: { value: 0 }
       },
@@ -67,25 +79,11 @@ export default class Particle extends Three.Mesh {
         Bas.ShaderChunk['ease_quad_out'],
         Bas.ShaderChunk['quaternion_rotation']
       ],
-      vertexParameters: [
-        'uniform float uTime;',
-        'attribute vec2 aDelayDuration;',
-        'attribute vec3 aStartPosition;',
-        'attribute vec3 aEndPosition;',
-        'attribute vec4 aAxisAngle;'
-      ],
-      vertexInit: [
-        'float tProgress = clamp(uTime - aDelayDuration.x, 0.0, aDelayDuration.y) / aDelayDuration.y;',
-        'tProgress = easeCubicInOut(tProgress);',
-        'vec4 tQuat = quatFromAxisAngle(aAxisAngle.xyz, aAxisAngle.w * tProgress);'
-      ],
+      vertexParameters,
+      vertexInit,
       vertexNormal: [],
-      vertexPosition: [
-        'float scl = easeQuadOut(tProgress, 0.5, 1.5, 1.0);',
-        'transformed *= scl;',
-        'transformed = rotateVector(tQuat, transformed);',
-        'transformed += mix(aStartPosition, aEndPosition, tProgress);'
-      ]
+      vertexPosition,
+      vertexColor: ['vColor = vec3(0.0, 0.6, 1.0);']
     })
 
     super(geometry as any, material as any)

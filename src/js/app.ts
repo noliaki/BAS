@@ -10,8 +10,11 @@ const light = new Three.DirectionalLight(0x00aaff)
 const light2 = new Three.DirectionalLight(0x00ffff)
 light2.position.y = -1
 
-threeBase.addToScene(light)
-threeBase.addToScene(light2)
+const axes = new Three.AxesHelper(1000)
+
+// threeBase.addToScene(light)
+// threeBase.addToScene(light2)
+threeBase.addToScene(axes)
 threeBase.addToScene(particle)
 
 let toggle = false
@@ -19,14 +22,14 @@ const obj = {
   time: 0
 }
 
-document.addEventListener('click', event => {
+document.getElementById('animation-toggle').addEventListener('click', event => {
   event.preventDefault()
 
   toggle = !toggle
 
   TweenLite.fromTo(
     obj,
-    10,
+    1,
     {
       time: obj.time
     },

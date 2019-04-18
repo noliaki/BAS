@@ -2,11 +2,12 @@ import * as Three from 'three'
 import OrbitControls from 'three-orbitcontrols'
 
 export default class ThreeBase {
-  private scene: Three.Scene
-  private camera: Three.PerspectiveCamera
-  private renderer: Three.WebGLRenderer
-  private controls: OrbitControls
-  private timerId: number
+  public scene: Three.Scene
+  public camera: Three.PerspectiveCamera
+  public renderer: Three.WebGLRenderer
+  public controls: OrbitControls
+  public timerId: NodeJS.Timeout
+  public light: Three.AmbientLight
 
   constructor() {
     this.scene = new Three.Scene()
@@ -17,12 +18,16 @@ export default class ThreeBase {
       10000
     )
     this.camera.lookAt(this.scene.position)
-    this.camera.position.z = 100
+    this.camera.position.z = 1000
     // camera.position.x = -100
+
+    this.light = new Three.DirectionalLight(0xffffff)
+    this.addToScene(this.light)
 
     this.renderer = new Three.WebGLRenderer({
       canvas: document.getElementById('app') as HTMLCanvasElement
     })
+    this.renderer.setClearColor(new Three.Color(0xeeeeee))
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
