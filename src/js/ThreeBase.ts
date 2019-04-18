@@ -25,7 +25,8 @@ export default class ThreeBase {
     this.addToScene(this.light)
 
     this.renderer = new Three.WebGLRenderer({
-      canvas: document.getElementById('app') as HTMLCanvasElement
+      canvas: document.getElementById('app') as HTMLCanvasElement,
+      antialias: true
     })
     this.renderer.setClearColor(new Three.Color(0xeeeeee))
 
