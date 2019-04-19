@@ -6,7 +6,7 @@ export default class ThreeBase {
   public camera: Three.PerspectiveCamera
   public renderer: Three.WebGLRenderer
   public controls: OrbitControls
-  public timerId: NodeJS.Timeout
+  public timerId: number
   public light: Three.AmbientLight
 
   constructor() {

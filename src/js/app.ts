@@ -29,7 +29,7 @@ document.getElementById('animation-toggle').addEventListener('click', event => {
 
   TweenLite.fromTo(
     obj,
-    1,
+    3,
     {
       time: obj.time
     },
