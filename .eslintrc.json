@@ -1,10 +1,6 @@
 {
-  "extends": ["@noliaki/eslint-config-prettier"],
-  "plugins": ["@typescript-eslint"],
-  "parser": "@typescript-eslint/parser",
-  "rules": {
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "error",
-    "no-this-before-super": "off"
+  "extends": ["@noliaki/eslint-config-typescript-prettier"],
+  "env": {
+    "browser": true
   }
 }

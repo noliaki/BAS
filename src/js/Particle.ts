@@ -42,7 +42,7 @@ export default class Particle extends Three.Mesh {
         r * Math.cos(latitude) * Math.sin(longitude)
       ])
 
-      const delay = Math.random() * maxPrefabDelay
+      // const delay = Math.random() * maxPrefabDelay
 
       for (
         let j = 0,
@@ -70,14 +70,14 @@ export default class Particle extends Three.Mesh {
       uniforms: {
         uTime: { value: 0 }
       },
-      uniformValues: {
-        metalness: 0.5,
-        roughness: 0.5
-      },
+      // uniformValues: {
+      //   metalness: 0.5,
+      //   roughness: 0.5
+      // },
       vertexFunctions: [
-        Bas.ShaderChunk['ease_cubic_in_out'],
-        Bas.ShaderChunk['ease_quad_out'],
-        Bas.ShaderChunk['quaternion_rotation']
+        Bas.ShaderChunk.ease_cubic_in_out,
+        Bas.ShaderChunk.ease_quad_out,
+        Bas.ShaderChunk.quaternion_rotation
       ],
       vertexParameters,
       vertexInit,

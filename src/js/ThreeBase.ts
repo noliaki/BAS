@@ -6,10 +6,11 @@ export default class ThreeBase {
   public camera: Three.PerspectiveCamera
   public renderer: Three.WebGLRenderer
   public controls: OrbitControls
-  public timerId: number
+  public timerId: number | null
   public light: Three.AmbientLight
 
   constructor() {
+    this.timerId = null
     this.scene = new Three.Scene()
     this.camera = new Three.PerspectiveCamera(
       45,
