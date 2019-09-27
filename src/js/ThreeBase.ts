@@ -1,5 +1,6 @@
 import * as Three from 'three'
 import OrbitControls from 'three-orbitcontrols'
+import TrackballControls from 'three-trackballcontrols'
 
 export default class ThreeBase {
   public scene: Three.Scene
@@ -7,7 +8,7 @@ export default class ThreeBase {
   public renderer: Three.WebGLRenderer
   public controls: OrbitControls
   public timerId: number | null
-  public light: Three.AmbientLight
+  // public light: Three.AmbientLight
 
   constructor() {
     this.timerId = null
@@ -22,16 +23,16 @@ export default class ThreeBase {
     this.camera.position.z = 1000
     // camera.position.x = -100
 
-    this.light = new Three.DirectionalLight(0xffffff)
-    this.addToScene(this.light)
+    // this.light = new Three.DirectionalLight(0xffffff)
+    // this.addToScene(this.light)
 
     this.renderer = new Three.WebGLRenderer({
       canvas: document.getElementById('app') as HTMLCanvasElement,
       antialias: true
     })
-    this.renderer.setClearColor(new Three.Color(0xeeeeee))
+    this.renderer.setClearColor(new Three.Color(0x1a202c))
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls = new TrackballControls(this.camera, this.renderer.domElement)
 
     window.addEventListener('resize', event => {
       if (this.timerId) {

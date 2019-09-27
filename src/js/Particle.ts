@@ -86,7 +86,7 @@ export default class Particle extends Three.Mesh {
       vertexColor: ['vColor = vec3(0.0, 0.6, 1.0);']
     })
 
-    super(geometry as any, material as any)
+    super(geometry, material)
     this.frustumCulled = false
     this.material = material
   }

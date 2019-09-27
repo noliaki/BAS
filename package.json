@@ -19,6 +19,7 @@
     "three": "^0.108.0",
     "three-bas": "^2.10.1",
     "three-orbitcontrols": "^2.108.1",
+    "three-trackballcontrols": "^0.0.8",
     "ts-loader": "^6.1.2"
   },
   "scripts": {

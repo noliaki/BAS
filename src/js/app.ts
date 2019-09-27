@@ -1,21 +1,26 @@
 import * as Three from 'three'
 import ThreeBase from './ThreeBase'
-import Particle from './Particle'
+// import Particle from './Particle'
+import Points from './Points'
 import { TweenLite } from 'gsap/TweenLite'
 
-const threeBase = new ThreeBase()
-const particle = new Particle()
+import { getPointFromImage, loadImage, PointData } from './helper'
 
-// const light = new Three.DirectionalLight(0x00aaff)
+const threeBase = new ThreeBase()
+// const particle = new Particle()
+const points: Points = new Points()
+
+const light = new Three.DirectionalLight(0x00aaff)
 const light2 = new Three.DirectionalLight(0x00ffff)
-light2.position.y = -1
+light2.position.y = -1000
+light2.position.x = -1000
 
 const axes = new Three.AxesHelper(1000)
 
-// threeBase.addToScene(light)
-// threeBase.addToScene(light2)
+threeBase.addToScene(light)
+threeBase.addToScene(light2)
 threeBase.addToScene(axes)
-// threeBase.addToScene(particle)
+threeBase.addToScene(points)
 
 let toggle = false
 const obj = {
@@ -25,8 +30,19 @@ const obj = {
 const btn: HTMLElement | null = document.getElementById('animation-toggle')
 
 if (btn) {
-  btn.addEventListener('click', event => {
+  btn.addEventListener('click', async event => {
     event.preventDefault()
+
+    const imgEl: HTMLImageElement = await loadImage('./cat.jpg')
+    const pointdata: PointData[] | void = getPointFromImage(imgEl)
+
+    console.log(pointdata)
+
+    if (pointdata) {
+      points.setEndPointData(pointdata)
+    }
+
+    console.log(imgEl)
 
     toggle = !toggle
 
@@ -39,7 +55,7 @@ if (btn) {
       {
         time: toggle ? 1.5 : 0,
         onUpdate() {
-          particle.material.uniforms.uTime.value = obj.time
+          points.time = obj.time
         }
       }
     )
