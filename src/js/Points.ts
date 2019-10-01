@@ -89,6 +89,7 @@ export default class Point extends Three.Points {
     })
 
     super(geometry, material)
+
     this.frustumCulled = false
     this.count = count
     this.material = material

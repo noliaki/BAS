@@ -34,7 +34,7 @@ export default class ThreeBase {
 
     this.controls = new TrackballControls(this.camera, this.renderer.domElement)
 
-    window.addEventListener('resize', event => {
+    window.addEventListener('resize', () => {
       if (this.timerId) {
         clearTimeout(this.timerId)
       }
