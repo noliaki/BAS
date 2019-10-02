@@ -8,7 +8,6 @@ import vertexPosition from './glsl/ImageTransition/vertexPosition.vert'
 export default class ImageTransition extends Three.Mesh {
   public material: Three.Material
   public geometry: Three.Geometry
-  public duration: number
 
   constructor(texture: Three.Texture, texture2: Three.Texture) {
     const image: any = texture.image
@@ -115,8 +114,6 @@ export default class ImageTransition extends Three.Mesh {
 
     this.material = material
     this.geometry = imageGeo
-    // this.duration = totalDuration
-    // this.setTexture(image)
   }
 
   getCentroidPoint(centroid: any): Three.Vector3 {
@@ -130,7 +127,7 @@ export default class ImageTransition extends Three.Mesh {
     return temp
   }
 
-  setTexture(texture: HTMLImageElement): void {
+  setTexture(texture: Three.Texture): void {
     console.log((this.material as any).uniforms.map)
     ;(this.material as any).uniforms.map.value.image = texture
     ;(this.material as any).uniforms.map.value.needsUpdate = true
@@ -142,40 +139,5 @@ export default class ImageTransition extends Three.Mesh {
 
   set time(time: number) {
     ;(this.material as any).uniforms.uTime.value = time
-  }
-}
-
-class ImageGeometry extends Bas.ModelBufferGeometry {
-  public model: Three.Geometry
-
-  constructor(model: Three.Geometry) {
-    super(model)
-    this.model = model
-  }
-
-  public bufferPositions(): void {
-    const self = this as Bas.ModelBufferGeometry
-    const positionBuffer: any[] = self.createAttribute('position', 3).array
-
-    for (let i: number = 0, len: number = self.faceCount; i < len; i++) {
-      const face = self.modelGeometry.faces[i]
-      const centroid = Bas.Utils.computeCentroid(self.modelGeometry, face)
-
-      const a = self.modelGeometry.vertices[face.a]
-      const b = self.modelGeometry.vertices[face.b]
-      const c = self.modelGeometry.vertices[face.c]
-
-      positionBuffer[face.a * 3 + 0] = a.x = centroid.x
-      positionBuffer[face.a * 3 + 1] = a.y = centroid.y
-      positionBuffer[face.a * 3 + 2] = a.z = centroid.z
-
-      positionBuffer[face.b * 3 + 0] = b.x = centroid.x
-      positionBuffer[face.b * 3 + 1] = b.y = centroid.y
-      positionBuffer[face.b * 3 + 2] = b.z = centroid.z
-
-      positionBuffer[face.c * 3 + 0] = c.x = centroid.x
-      positionBuffer[face.c * 3 + 1] = c.y = centroid.y
-      positionBuffer[face.c * 3 + 2] = c.z = centroid.z
-    }
   }
 }

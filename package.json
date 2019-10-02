@@ -16,7 +16,7 @@
     "parcel-bundler": "^1.12.3",
     "prettier": "^1.18.2",
     "raw-loader": "^3.1.0",
-    "three": "^0.108.0",
+    "three": ">= 0.86 <= 1.0",
     "three-bas": "^2.10.1",
     "three-orbitcontrols": "^2.108.1",
     "three-trackballcontrols": "^0.0.8",
