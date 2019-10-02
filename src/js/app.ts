@@ -5,7 +5,7 @@ import ImageTransition from './ImageTransition'
 // import Points from './Points'
 import { TweenLite } from 'gsap/TweenLite'
 
-import { loadImage } from './helper'
+import { loadImage, loadTexture } from './helper'
 
 // const threeBase = new ThreeBase()
 // // const particle = new Particle()
@@ -72,9 +72,13 @@ async function init(): Promise<void> {
 
   const axes = new Three.AxesHelper(1000)
 
-  const imgEl: HTMLImageElement = await loadImage('./cat.jpg')
+  const texture1: Three.Texture = await loadTexture('./cat1.jpg')
+  const texture2: Three.Texture = await loadTexture('./cat2.jpg')
 
-  const imageTransition: ImageTransition = new ImageTransition(imgEl)
+  const imageTransition: ImageTransition = new ImageTransition(
+    texture1,
+    texture2
+  )
 
   threeBase.addToScene(light)
   threeBase.addToScene(light2)
@@ -102,8 +106,8 @@ async function init(): Promise<void> {
         time: obj.time
       },
       {
-        time: toggle ? 1.5 : 0,
-        onUpdate() {
+        time: toggle ? 0 : 1,
+        onUpdate(): void {
           imageTransition.time = obj.time
         }
       }
