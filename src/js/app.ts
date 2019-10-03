@@ -1,6 +1,6 @@
 import * as Three from 'three'
 import ThreeBase from './ThreeBase'
-// import Particle from './Particle'
+import Particle from './Particle'
 import ImageTransition from './ImageTransition'
 // import Points from './Points'
 import { TweenLite } from 'gsap/TweenLite'
@@ -65,25 +65,32 @@ import { loadImage, loadTexture } from './helper'
 
 async function init(): Promise<void> {
   const threeBase = new ThreeBase()
-  const light = new Three.DirectionalLight(0x00aaff)
-  const light2 = new Three.DirectionalLight(0x00ffff)
-  light2.position.y = -1000
+  const light = new Three.DirectionalLight(0xffffff)
+  const light2 = new Three.DirectionalLight(0xffffff)
+  light.position.x = 1000
+  light.position.y = 1000
+  light.position.z = 1000
+
   light2.position.x = -1000
+  light2.position.y = -1000
+  light2.position.z = -1000
 
   const axes = new Three.AxesHelper(1000)
 
-  const texture1: Three.Texture = await loadTexture('./cat1.jpg')
-  const texture2: Three.Texture = await loadTexture('./cat2.jpg')
+  // const texture1: Three.Texture = await loadTexture('./cat1.jpg')
+  // const texture2: Three.Texture = await loadTexture('./cat2.jpg')
 
-  const imageTransition: ImageTransition = new ImageTransition(
-    texture1,
-    texture2
-  )
+  // const imageTransition: ImageTransition = new ImageTransition(
+  //   texture1,
+  //   texture2
+  // )
+
+  const particle = new Particle()
 
   threeBase.addToScene(light)
   threeBase.addToScene(light2)
   threeBase.addToScene(axes)
-  threeBase.addToScene(imageTransition)
+  threeBase.addToScene(particle)
 
   const btn: HTMLElement | null = document.getElementById('animation-toggle')
 
@@ -108,7 +115,7 @@ async function init(): Promise<void> {
       {
         time: toggle ? 0 : 1,
         onUpdate(): void {
-          imageTransition.time = obj.time
+          particle.time = obj.time
         }
       }
     )

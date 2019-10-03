@@ -8,20 +8,40 @@ import vertexPosition from './glsl/vertexPosition.vert'
 export default class Particle extends Three.Mesh {
   public material: any
 
-  constructor({ count = 50000 } = {}) {
+  constructor({ count = 1000000 } = {}) {
     const prefabCount = count
-    const prefabGeometry = new Three.DodecahedronGeometry()
-    const geometry = new Bas.PrefabBufferGeometry(prefabGeometry, prefabCount)
+    const prefabGeometry = new Three.CircleGeometry()
+    const geometry = new Bas.PrefabBufferGeometry(prefabGeometry, prefabCount, {
+      localizeFaces: true,
+      computeCentroids: true
+    })
 
-    const aDelayDuration = geometry.createAttribute('aDelayDuration', 2)
+    const aDelayDuration = geometry.createAttribute(
+      'aDelayDuration',
+      2,
+      (data, index, sizeCount) => {
+        data[0] = Math.random() * 0.5
+        data[1] = 1
+      }
+    )
     const duration = 1.0
     const maxPrefabDelay = 0.5
 
     const axis = new Three.Vector3()
-    const aStartPosition = geometry.createAttribute('aStartPosition', 3)
+    const aStartPosition = geometry.createAttribute(
+      'aStartPosition',
+      3,
+      (data, index, sizeCount) => {
+        if (index === 5) {
+          console.log(data, index, sizeCount, geometry.centroids)
+        }
+      }
+    )
     const aEndPosition = geometry.createAttribute('aEndPosition', 3)
 
-    const range = 400
+    const range = 1000
+
+    console.log(aStartPosition)
 
     for (let i = 0; i < prefabCount; i++) {
       const angle = (Math.random() * 360 * Math.PI) / 180
@@ -44,15 +64,18 @@ export default class Particle extends Three.Mesh {
 
       // const delay = Math.random() * maxPrefabDelay
 
-      for (
-        let j = 0,
-          len = prefabGeometry.vertices.length * aDelayDuration.itemSize;
-        j < len;
-        j += aDelayDuration.itemSize
-      ) {
-        aDelayDuration.array[len * i + j + 0] = Math.random() * maxPrefabDelay
-        aDelayDuration.array[len * i + j + 1] = duration
-      }
+      // aDelayDuration.array[i + 0] = Math.random() * maxPrefabDelay
+      // aDelayDuration.array[i + 1] = duration
+
+      // for (
+      //   let j = 0,
+      //     len = prefabGeometry.vertices.length * aDelayDuration.itemSize;
+      //   j < len;
+      //   j += aDelayDuration.itemSize
+      // ) {
+      //   aDelayDuration.array[len * i + j + 0] = Math.random() * maxPrefabDelay
+      //   aDelayDuration.array[len * i + j + 1] = duration
+      // }
     }
 
     geometry.createAttribute('aAxisAngle', 4, data => {
@@ -65,6 +88,7 @@ export default class Particle extends Three.Mesh {
     })
 
     const material = new Bas.StandardAnimationMaterial({
+      side: Three.DoubleSide,
       flatShading: true,
       vertexColors: Three.VertexColors,
       uniforms: {
@@ -83,11 +107,19 @@ export default class Particle extends Three.Mesh {
       vertexInit,
       vertexNormal: [],
       vertexPosition,
-      vertexColor: ['vColor = vec3(0.0, 0.6, 1.0);']
+      vertexColor: ['vColor = vec3(255.0, 1.0, 1.0);']
     })
 
     super(geometry, material)
     this.frustumCulled = false
     this.material = material
+  }
+
+  get time() {
+    return this.material.uniforms.uTime.value
+  }
+
+  set time(time: number) {
+    this.material.uniforms.uTime.value = time
   }
 }

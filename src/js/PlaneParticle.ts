@@ -84,8 +84,6 @@ export default class PlainParticle extends Three.Mesh {
       }
     )
 
-    texture.minFilter = Three.LinearFilter
-
     const material = new Bas.BasicAnimationMaterial({
       side: Three.DoubleSide,
       vertexColors: Three.VertexColors,
