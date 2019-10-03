@@ -8,6 +8,8 @@ import vertexPosition from './glsl/ImageTransition/vertexPosition.vert'
 export default class ImageTransition extends Three.Mesh {
   public material: Three.Material
   public geometry: Three.Geometry
+  private textures: Three.Texture[]
+  private textureIndex: number
 
   constructor(texture: Three.Texture, texture2: Three.Texture) {
     const image: any = texture.image
@@ -43,6 +45,7 @@ export default class ImageTransition extends Three.Mesh {
         Math.random() * -2 + 1
       ).toArray(data)
     })
+
     imageGeo.createAttribute('aEndPosition', 4, (data): void => {
       new Three.Vector4(
         Three.Math.randFloatSpread(1000),
@@ -54,18 +57,18 @@ export default class ImageTransition extends Three.Mesh {
 
     imageGeo.createAttribute('aControl0', 4, (data): void => {
       new Three.Vector4(
-        Three.Math.randFloatSpread(300),
-        Three.Math.randFloatSpread(300),
-        Three.Math.randFloatSpread(300),
+        Three.Math.randFloatSpread(1000),
+        Three.Math.randFloatSpread(1000),
+        Three.Math.randFloatSpread(1000),
         Math.random() * -2 + 1
       ).toArray(data)
     })
 
     imageGeo.createAttribute('aControl1', 4, (data): void => {
       new Three.Vector4(
-        Three.Math.randFloatSpread(300),
-        Three.Math.randFloatSpread(300),
-        Three.Math.randFloatSpread(300),
+        Three.Math.randFloatSpread(1000),
+        Three.Math.randFloatSpread(1000),
+        Three.Math.randFloatSpread(1000),
         Math.random() * -2 + 1
       ).toArray(data)
     })
@@ -114,6 +117,12 @@ export default class ImageTransition extends Three.Mesh {
 
     this.material = material
     this.geometry = imageGeo
+
+    this.textures = []
+    this.textures.push(texture)
+    this.textures.push(texture2)
+
+    this.textureIndex = 0
   }
 
   getCentroidPoint(centroid: any): Three.Vector3 {
