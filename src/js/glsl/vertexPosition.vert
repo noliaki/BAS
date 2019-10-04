@@ -1,4 +1,10 @@
-float scl = easeQuadOut(tProgress, 0.5, 1.5, 1.0);
+float scl = abs(sin(uTime / 100.0)) + 1.0;
 transformed *= scl;
+float xWidth = sin(uTime / aStagger.x);
+float yWidth = cos(uTime / aStagger.y);
+float zWidth = tan(uTime / aStagger.z);
 transformed = rotateVector(tQuat, transformed);
 transformed += mix(aStartPosition, aEndPosition, tProgress);
+transformed.x += xWidth * aStagger.w;
+transformed.y += yWidth * aStagger.w;
+transformed.z += xWidth * aStagger.w;

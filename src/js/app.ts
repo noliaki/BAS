@@ -7,6 +7,8 @@ import { TweenLite } from 'gsap/TweenLite'
 
 import { loadImage, loadTexture } from './helper'
 
+import StringToImageData from './StringToImageData'
+
 // const threeBase = new ThreeBase()
 // // const particle = new Particle()
 // const points: Points = new Points()
@@ -65,15 +67,15 @@ import { loadImage, loadTexture } from './helper'
 
 async function init(): Promise<void> {
   const threeBase = new ThreeBase()
-  const light = new Three.DirectionalLight(0xffffff)
+  const light = new Three.AmbientLight(0xffffff)
   const light2 = new Three.DirectionalLight(0xffffff)
   light.position.x = 1000
   light.position.y = 1000
   light.position.z = 1000
 
-  light2.position.x = -1000
-  light2.position.y = -1000
-  light2.position.z = -1000
+  light2.position.x = 1000
+  // light2.position.y = 1000
+  light2.position.z = 1000
 
   const axes = new Three.AxesHelper(1000)
 
@@ -85,12 +87,15 @@ async function init(): Promise<void> {
   //   texture2
   // )
 
-  const particle = new Particle()
+  const particle: Particle = new Particle()
 
-  threeBase.addToScene(light)
+  // threeBase.addToScene(light)
   threeBase.addToScene(light2)
   threeBase.addToScene(axes)
   threeBase.addToScene(particle)
+
+  const hoge = new StringToImageData('hogehoge')
+  console.log(hoge)
 
   const btn: HTMLElement | null = document.getElementById('animation-toggle')
 
@@ -106,6 +111,8 @@ async function init(): Promise<void> {
 
     toggle = !toggle
 
+    particle.setEndPosition([0])
+
     TweenLite.fromTo(
       obj,
       3,
@@ -115,11 +122,18 @@ async function init(): Promise<void> {
       {
         time: toggle ? 0 : 1,
         onUpdate(): void {
-          particle.time = obj.time
+          particle.progress = obj.time
         }
       }
     )
   })
+
+  loop()
+
+  function loop() {
+    particle.time += 1
+    requestAnimationFrame(loop)
+  }
 }
 
 init()
