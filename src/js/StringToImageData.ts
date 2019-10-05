@@ -80,10 +80,15 @@ export default class StringToImageData {
 
       if (a === 0) continue
 
+      const x: number = (i / 4) % width
+      const y: number = Math.floor(i / 4 / width)
+
       position.push({
-        x: i % width,
-        y: Math.floor(i / width)
+        x: (x * 2 - width) / width,
+        y: -(y * 2 - height) / height
       })
     }
+
+    return position
   }
 }

@@ -7,7 +7,7 @@ import { TweenLite } from 'gsap/TweenLite'
 
 import { loadImage, loadTexture } from './helper'
 
-import StringToImageData from './StringToImageData'
+import StringToImageData, { Position } from './StringToImageData'
 
 // const threeBase = new ThreeBase()
 // // const particle = new Particle()
@@ -94,7 +94,7 @@ async function init(): Promise<void> {
   threeBase.addToScene(axes)
   threeBase.addToScene(particle)
 
-  const hoge = new StringToImageData('hogehoge')
+  const hoge = new StringToImageData('こんにちわ')
   console.log(hoge)
 
   const btn: HTMLElement | null = document.getElementById('animation-toggle')
@@ -111,7 +111,9 @@ async function init(): Promise<void> {
 
     toggle = !toggle
 
-    particle.setEndPosition([0])
+    const position: Position[] = hoge.getPosition()
+
+    particle.setEndPosition(position)
 
     TweenLite.fromTo(
       obj,

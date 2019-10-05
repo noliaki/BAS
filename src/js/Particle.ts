@@ -5,11 +5,13 @@ import vertexParameters from './glsl/vertexParameters.vert'
 import vertexInit from './glsl/vertexInit.vert'
 import vertexPosition from './glsl/vertexPosition.vert'
 
+import { Position } from './StringToImageData'
+
 export default class Particle extends Three.Mesh {
   public material: any
   public endPosition: any
   private count: number
-  private geometry: any
+  public geometry: any
 
   constructor({ count = 1000000 } = {}) {
     const duration: number = 0.5
@@ -19,10 +21,10 @@ export default class Particle extends Three.Mesh {
 
     geometry.createAttribute('aStagger', 4, (data): void => {
       new Three.Vector4(
-        Three.Math.randFloat(100, 200),
-        Three.Math.randFloat(100, 200),
-        Three.Math.randFloat(100, 200),
-        Three.Math.randFloatSpread(200)
+        Three.Math.randFloat(10, 1000),
+        Three.Math.randFloat(10, 1000),
+        Three.Math.randFloat(10, 1000),
+        Three.Math.randFloatSpread(100)
       ).toArray(data)
     })
 
@@ -164,19 +166,21 @@ export default class Particle extends Three.Mesh {
     this.material.uniforms.uProgress.value = progress
   }
 
-  setEndPosition(position: number[]): void {
+  setEndPosition(position: Position[]): void {
     const positionLen: number = position.length
-    const len: number = this.endPosition.count
+    const len: number = this.count
     const itemSize: number = this.endPosition.itemSize
 
-    console.log(len, itemSize, this.endPosition)
+    console.log(position)
 
     for (let i: number = 0; i < len; i++) {
       const index: number = i % positionLen
 
-      this.endPosition.array[i * itemSize + 0] = position[index]
-      this.endPosition.array[i * itemSize + 1] = position[index]
-      this.endPosition.array[i * itemSize + 2] = 0
+      this.geometry.setPrefabData('aEndPosition', i, [
+        position[index].x * 1000,
+        position[index].y * 1000,
+        0
+      ])
     }
 
     this.endPosition.needsUpdate = true
