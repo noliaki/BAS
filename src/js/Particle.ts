@@ -17,6 +17,7 @@ export default class Particle extends Three.Mesh {
     const duration: number = 0.5
     const maxDelay: number = 0.5
     const prefabGeometry = new Three.PlaneGeometry()
+    Bas.Utils.separateFaces(prefabGeometry)
     const geometry = new Bas.PrefabBufferGeometry(prefabGeometry, count)
 
     geometry.createAttribute('aStagger', 4, (data, index, sizeCount): void => {
@@ -31,21 +32,48 @@ export default class Particle extends Three.Mesh {
       ).toArray(data)
     })
 
-    geometry.createAttribute('aDelayDuration', 2, (data): void => {
-      data[0] = Math.random() * maxDelay
-      data[1] = duration
-    })
+    // geometry.createAttribute('aDelayDuration', 2, (data): void => {
+    //   data[0] = Math.random() * maxDelay
+    //   data[1] = duration
+    // })
+
+    const aDelayDuration = geometry.createAttribute('aDelayDuration', 2)
+    const vertexDelay: number = 0.04
+
+    for (let i: number = 0; i < count; i += 2) {
+      const delay: number = Math.random() * (maxDelay - vertexDelay)
+
+      // aDelayDuration.array[i + 0] = delay
+      // aDelayDuration.array[i + 1] = duration
+
+      for (let j: number = 0; j < 6; j += 2) {
+        const index: number = i * 6 + j
+        aDelayDuration.array[index + 0] = delay + Math.random() * vertexDelay
+        aDelayDuration.array[index + 1] = duration
+      }
+    }
+    console.log(geometry, aDelayDuration)
 
     geometry.createAttribute('aScale', 4, (data): void => {
       new Three.Vector4(
-        Math.random() * 20 + 5,
+        Math.random() * 20 + 10,
         Three.Math.randFloat(10, 50),
         Math.random(),
-        Three.Math.randFloat(1, 5)
+        Three.Math.randFloat(1, 20)
       ).toArray(data)
     })
 
     geometry.createAttribute('aStartPosition', 3, (data): void => {
+      const position = getRandomPointOnSphere(Math.random() * 5000)
+
+      new Three.Vector3(position.x, position.y, position.z).toArray(data)
+    })
+    geometry.createAttribute('aControl0', 3, (data): void => {
+      const position = getRandomPointOnSphere(Math.random() * 5000)
+
+      new Three.Vector3(position.x, position.y, position.z).toArray(data)
+    })
+    geometry.createAttribute('aControl1', 3, (data): void => {
       const position = getRandomPointOnSphere(Math.random() * 5000)
 
       new Three.Vector3(position.x, position.y, position.z).toArray(data)
@@ -83,6 +111,7 @@ export default class Particle extends Three.Mesh {
         uLoudness: { type: 'f', value: 0 }
       },
       vertexFunctions: [
+        Bas.ShaderChunk.cubic_bezier,
         Bas.ShaderChunk.ease_circ_in_out,
         Bas.ShaderChunk.ease_elastic_in_out,
         Bas.ShaderChunk.ease_quad_out,
