@@ -1,4 +1,10 @@
 float tProgress = clamp(uProgress - aDelayDuration.x, 0.0, aDelayDuration.y) / aDelayDuration.y;
-tProgress = easeCubicInOut(tProgress);
-vec4 tQuat = quatFromAxisAngle(aAxisAngle.xyz, aAxisAngle.w + (uTime / 10.0));
-vec3 color = hsv(cos(uTime / 500.0), 0.3, 0.7);
+tProgress = easeCircInOut(tProgress);
+vec4 tQuat = quatFromAxisAngle(aAxisAngle.xyz, radians(aAxisAngle.w) + (uTime / 10.0));
+vec3 color = hsv(cos(uTime / 80.0) + aStagger.z / 5.0, 0.7, 0.9);
+float rad = radians(mod((uTime / aStagger.y) + aStagger.x, 180.0));
+float theta = PI2 * rad;
+float phi = acos(2.0 * rad - 1.0);
+float xDist = aStagger.w * sin(theta) * sin(phi);
+float yDist = aStagger.w * cos(theta) * sin(phi);
+float zDist = aStagger.w * cos(phi);

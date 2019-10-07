@@ -8,7 +8,6 @@ export default class ThreeBase {
   public renderer: Three.WebGLRenderer
   public controls: OrbitControls
   public timerId: number | null
-  // public light: Three.AmbientLight
 
   constructor() {
     this.timerId = null
@@ -17,14 +16,10 @@ export default class ThreeBase {
       45,
       window.innerWidth / window.innerHeight,
       0.1,
-      10000
+      20000
     )
     this.camera.lookAt(this.scene.position)
     this.camera.position.z = 1000
-    // camera.position.x = -100
-
-    // this.light = new Three.DirectionalLight(0xffffff)
-    // this.addToScene(this.light)
 
     this.renderer = new Three.WebGLRenderer({
       canvas: document.getElementById('app') as HTMLCanvasElement,
@@ -59,9 +54,6 @@ export default class ThreeBase {
   tick() {
     this.controls.update()
     this.render()
-    requestAnimationFrame(() => {
-      this.tick()
-    })
   }
 
   setSize() {

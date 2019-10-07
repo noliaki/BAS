@@ -6,29 +6,28 @@ export interface Position {
 export default class StringToImageData {
   private canvas: HTMLCanvasElement
   private context: CanvasRenderingContext2D | null
-  private text: string
-  private fontSize: number
-  private fontFamily: string
-  private textBaseline: CanvasTextBaseline
+  private text: string = ''
+  private fontSize: number = 50
+  private fontFamily: string = 'serif'
+  private textBaseline: CanvasTextBaseline = 'middle'
 
-  constructor(text: string) {
-    this.fontSize = 30
-    this.text = text
-    this.fontFamily = 'serif'
-    this.textBaseline = 'middle'
-
+  constructor() {
     this.canvas = document.createElement('canvas')
     this.context = this.canvas.getContext('2d')
+
     if (this.context === null) {
       throw new Error('cannot get context 2D')
     }
-
-    this.drawText()
   }
 
-  calcTextHeight(): number {
+  private calcTextHeight(): number {
     const el: HTMLDivElement = document.createElement('div')
+    el.style.position = 'absolute'
+    el.style.top = '0px'
+    el.style.left = '0px'
+    el.style.opacity = '0'
     el.style.fontFamily = this.fontFamily
+    el.style.lineHeight = '1'
     el.style.fontSize = `${this.fontSize}px`
     el.textContent = this.text
 
@@ -39,8 +38,12 @@ export default class StringToImageData {
     return height
   }
 
-  drawText(): void {
-    if (this.context === null) return
+  drawText(
+    text: string
+  ): { width: number; height: number; position: Position[] } {
+    if (this.context === null) throw new Error('`context` is not found')
+
+    this.text = text
 
     this.context.textBaseline = this.textBaseline
     this.context.font = `${this.fontSize}px serif`
@@ -51,9 +54,15 @@ export default class StringToImageData {
     this.context.textBaseline = this.textBaseline
     this.context.font = `${this.fontSize}px ${this.fontFamily}`
     this.context.fillText(this.text, 0, 20)
+
+    return {
+      width: this.canvas.width,
+      height: this.canvas.height,
+      position: this.getPosition()
+    }
   }
 
-  getImageDate(): ImageData {
+  private getImageDate(): ImageData {
     if (this.context === null) {
       throw new Error('context is not found')
     }

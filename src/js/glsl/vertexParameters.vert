@@ -1,10 +1,12 @@
 uniform float uTime;
 uniform float uProgress;
+uniform float uLoudness;
 attribute vec2 aDelayDuration;
 attribute vec3 aStartPosition;
 attribute vec3 aEndPosition;
 attribute vec4 aAxisAngle;
 attribute vec4 aStagger;
+attribute vec4 aScale;
 
 vec3 hsv(float h, float s, float v){
   vec4 t = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
