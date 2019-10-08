@@ -8,6 +8,7 @@ attribute vec3 aEndPosition;
 attribute vec4 aAxisAngle;
 attribute vec4 aStagger;
 attribute vec4 aScale;
+attribute vec4 aColor;
 
 vec3 hsv(float h, float s, float v){
   vec4 t = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
