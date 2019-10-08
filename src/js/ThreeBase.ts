@@ -2,13 +2,14 @@ import * as Three from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import TrackballControls from 'three-trackballcontrols'
 
+import { isPC } from './helper'
+
 export default class ThreeBase {
   public scene: Three.Scene
   public camera: Three.PerspectiveCamera
   public renderer: Three.WebGLRenderer
   public controls: OrbitControls
   public timerId: number | null
-  // public light: Three.AmbientLight
 
   constructor() {
     this.timerId = null
@@ -17,14 +18,10 @@ export default class ThreeBase {
       45,
       window.innerWidth / window.innerHeight,
       0.1,
-      10000
+      20000
     )
     this.camera.lookAt(this.scene.position)
     this.camera.position.z = 1000
-    // camera.position.x = -100
-
-    // this.light = new Three.DirectionalLight(0xffffff)
-    // this.addToScene(this.light)
 
     this.renderer = new Three.WebGLRenderer({
       canvas: document.getElementById('app') as HTMLCanvasElement,
@@ -32,14 +29,16 @@ export default class ThreeBase {
     })
     this.renderer.setClearColor(new Three.Color(0x1a202c))
 
-    this.controls = new TrackballControls(this.camera, this.renderer.domElement)
+    this.controls = isPC()
+      ? new TrackballControls(this.camera, this.renderer.domElement)
+      : new OrbitControls(this.camera, this.renderer.domElement)
 
     window.addEventListener('resize', () => {
       if (this.timerId) {
         clearTimeout(this.timerId)
       }
 
-      this.timerId = setTimeout(() => {
+      this.timerId = window.setTimeout(() => {
         this.setSize()
       }, 300)
     })
@@ -59,12 +58,15 @@ export default class ThreeBase {
   tick() {
     this.controls.update()
     this.render()
-    requestAnimationFrame(() => {
-      this.tick()
-    })
   }
 
   setSize() {
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    const width: number = window.innerWidth
+    const height: number = window.innerHeight
+
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(width, height)
+    this.camera.aspect = width / height
+    this.camera.updateProjectionMatrix()
   }
 }
