@@ -2,6 +2,8 @@ import * as Three from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import TrackballControls from 'three-trackballcontrols'
 
+import { isPC } from './helper'
+
 export default class ThreeBase {
   public scene: Three.Scene
   public camera: Three.PerspectiveCamera
@@ -27,14 +29,16 @@ export default class ThreeBase {
     })
     this.renderer.setClearColor(new Three.Color(0x1a202c))
 
-    this.controls = new TrackballControls(this.camera, this.renderer.domElement)
+    this.controls = isPC()
+      ? new TrackballControls(this.camera, this.renderer.domElement)
+      : new OrbitControls(this.camera, this.renderer.domElement)
 
     window.addEventListener('resize', () => {
       if (this.timerId) {
         clearTimeout(this.timerId)
       }
 
-      this.timerId = setTimeout(() => {
+      this.timerId = window.setTimeout(() => {
         this.setSize()
       }, 300)
     })
@@ -57,6 +61,12 @@ export default class ThreeBase {
   }
 
   setSize() {
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    const width: number = window.innerWidth
+    const height: number = window.innerHeight
+
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(width, height)
+    this.camera.aspect = width / height
+    this.camera.updateProjectionMatrix()
   }
 }

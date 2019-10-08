@@ -9,7 +9,7 @@ export default class StringToImageData {
   private text: string = ''
   private fontSize: number = 50
   private fontFamily: string = 'serif'
-  private textBaseline: CanvasTextBaseline = 'middle'
+  private textBaseline: CanvasTextBaseline = 'top'
 
   constructor() {
     this.canvas = document.createElement('canvas')
@@ -25,9 +25,10 @@ export default class StringToImageData {
     el.style.position = 'absolute'
     el.style.top = '0px'
     el.style.left = '0px'
-    el.style.opacity = '0'
+    // el.style.opacity = '0'
     el.style.fontFamily = this.fontFamily
     el.style.lineHeight = '1'
+    el.style.zIndex = '10'
     el.style.fontSize = `${this.fontSize}px`
     el.textContent = this.text
 
@@ -50,7 +51,8 @@ export default class StringToImageData {
     const textMetrics: TextMetrics = this.context.measureText(this.text)
 
     this.canvas.width = textMetrics.width
-    this.canvas.height = this.calcTextHeight()
+    this.canvas.height =
+      this.calcTextHeight() + textMetrics.actualBoundingBoxDescent
     this.context.textBaseline = this.textBaseline
     this.context.font = `${this.fontSize}px ${this.fontFamily}`
     this.context.fillText(this.text, 0, 20)
@@ -96,6 +98,13 @@ export default class StringToImageData {
         x: (x * 2 - width) / width,
         y: -(y * 2 - height) / height
       })
+    }
+
+    for (let i: number = position.length - 1; i >= 0; i--) {
+      const r: number = Math.floor(Math.random() * (i + 1))
+      const t: Position = position[i]
+      position[i] = position[r]
+      position[r] = t
     }
 
     return position

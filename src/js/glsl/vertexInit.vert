@@ -8,3 +8,4 @@ float phi = acos(2.0 * rad - 1.0);
 float xDist = aStagger.w * sin(theta) * sin(phi);
 float yDist = aStagger.w * cos(theta) * sin(phi);
 float zDist = aStagger.w * cos(phi);
+float staggerDistance = (1.1 - tProgress) + (1.0 / uStrLen) * tProgress;

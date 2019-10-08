@@ -1,11 +1,10 @@
 uniform float uTime;
 uniform float uProgress;
 uniform float uLoudness;
+uniform float uStrLen;
 attribute vec2 aDelayDuration;
 attribute vec3 aStartPosition;
 attribute vec3 aEndPosition;
-attribute vec3 aControl0;
-attribute vec3 aControl1;
 attribute vec4 aAxisAngle;
 attribute vec4 aStagger;
 attribute vec4 aScale;
