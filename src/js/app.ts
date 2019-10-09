@@ -14,6 +14,7 @@ const defaultDuration: number = 2
 const threeBase = new ThreeBase()
 const light = new Three.AmbientLight(0xffffff)
 const light2 = new Three.DirectionalLight(0xffffff)
+const initText: string = location.hash.replace(/^#/, '')
 // light.position.x = 1000
 light.position.y = -1000
 light.position.z = 1000
@@ -78,6 +79,11 @@ EventEmitter.on(
 )
 
 loop()
+
+if (initText) {
+  console.log(decodeURIComponent(initText))
+  EventEmitter.emit(EventName.ON_INPUT_TEXT, decodeURIComponent(initText))
+}
 
 function loop() {
   particle.time += 1
