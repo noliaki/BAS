@@ -20,47 +20,79 @@
         right: 0;
         left: 0;
         margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 300px;
       }
 
       form {
-        position: absolute;
-        right: 0;
-        bottom: 20px;
-        left: 0;
         display: flex;
         justify-content: center;
-        width: 200px;
-        margin: 0 auto;
+        align-items: center;
+        flex-grow: 1;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.8);
+        overflow: hidden;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.8);
       }
 
       input {
+        display: block;
         flex-grow: 1;
-        border-radius: 5px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
         padding: 0.4em 0.8em;
         font-size: inherit;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
+        background-color: transparent;
+        border: none;
+        outline: none;
       }
 
       button {
+        display: block;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+
+      .btn-submit {
         font-size: 1rem;
         flex-shrink: 0;
-        margin-left: 10px;
-        border-radius: 5px;
-        border: 1px solid rgba(255, 255, 255, 0.8);
         text-align: center;
         padding: 0 0.4em 0 0.6em;
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: transparent;
+      }
+
+      #speech {
+        flex-shrink: 0;
+        border-radius: 999em;
+        border: none;
+        background-color: #f7fafc;
+        width: 2.5em;
+        height: 2.5em;
+        font-size: 1.2rem;
+        margin-left: 10px;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.8);
+        transition: background-color 300ms linear;
+      }
+
+      #speech:hover {
+        background-color: #fed7e2;
+      }
+
+      #speech.is-recognizing {
+        background-color: #ed64a6;
       }
     </style>
   </head>
   <body>
     <canvas id="app"></canvas>
-    <form id="form">
-      <input type="text" id="input-text" autocomplete="off" />
-      <button type="submit">⚡️</button>
-    </form>
+    <div class="action">
+      <form id="form">
+        <input type="text" id="input-text" autocomplete="off" />
+        <button type="submit" class="btn-submit">⚡️</button>
+      </form>
+      <button type="button" id="speech">🎙</button>
+    </div>
     <script src="./js/app.ts"></script>
   </body>
 </html>

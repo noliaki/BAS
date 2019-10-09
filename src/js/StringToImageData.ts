@@ -25,7 +25,7 @@ export default class StringToImageData {
     el.style.position = 'absolute'
     el.style.top = '0px'
     el.style.left = '0px'
-    // el.style.opacity = '0'
+    el.style.opacity = '0'
     el.style.fontFamily = this.fontFamily
     el.style.lineHeight = '1'
     el.style.zIndex = '10'

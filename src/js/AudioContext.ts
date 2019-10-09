@@ -1,5 +1,5 @@
 const audioContext: AudioContext = new (window.AudioContext ||
-  window.webkitAudioContext)()
+  (window as any).webkitAudioContext)()
 const analyser: AnalyserNode = audioContext.createAnalyser()
 const frequencies: Uint8Array = new Uint8Array(analyser.frequencyBinCount)
 

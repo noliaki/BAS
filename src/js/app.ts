@@ -4,6 +4,8 @@ import Particle from './Particle'
 import { TweenLite, Power0 } from 'gsap/all'
 import StringToImageData from './StringToImageData'
 import { getByteFrequencyDataAverage, startConnect } from './AudioContext'
+import EventEmitter, { EventName } from './EventEmitter'
+import './SpeechRecognition'
 
 startConnect()
 
@@ -37,16 +39,17 @@ let reverseTimer: number | null = null
 const timeline = {
   progress: 0
 }
-;(document.getElementById('form') as HTMLFormElement).addEventListener(
-  'submit',
-  async event => {
-    event.preventDefault()
 
-    const text: string = (document.getElementById(
-      'input-text'
-    ) as HTMLInputElement).value
+const inputEl: HTMLInputElement = document.getElementById(
+  'input-text'
+) as HTMLInputElement
 
-    if (!text) return
+EventEmitter.on(
+  EventName.ON_INPUT_TEXT,
+  async (text: string): Promise<void> => {
+    if (inputEl.value !== text) {
+      inputEl.value = text
+    }
 
     timerStop()
 
@@ -59,6 +62,18 @@ const timeline = {
     particle.strLen = text.length
     await forwardsProgress()
     timerStart()
+  }
+)
+;(document.getElementById('form') as HTMLFormElement).addEventListener(
+  'submit',
+  (event: Event): void => {
+    event.preventDefault()
+
+    const text: string = inputEl.value
+
+    if (!text) return
+
+    EventEmitter.emit(EventName.ON_INPUT_TEXT, text)
   }
 )
 
