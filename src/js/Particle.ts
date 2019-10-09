@@ -19,6 +19,15 @@ export default class Particle extends Three.Mesh {
     const prefabGeometry = new Three.PlaneGeometry()
     const geometry = new Bas.PrefabBufferGeometry(prefabGeometry, count)
 
+    geometry.createAttribute('aStaggerTime', 4, (data): void => {
+      new Three.Vector4(
+        Three.Math.randFloat(100, 800),
+        Three.Math.randFloat(100, 800),
+        Three.Math.randFloat(100, 800),
+        Three.Math.randFloat(100, 800)
+      ).toArray(data)
+    })
+
     geometry.createAttribute('aStagger', 4, (data): void => {
       new Three.Vector4(
         Math.random() * 360,
@@ -27,6 +36,7 @@ export default class Particle extends Three.Mesh {
         Three.Math.randFloat(100, 1000)
       ).toArray(data)
     })
+
     geometry.createAttribute('aColor', 4, (data, index, sizeCount): void => {
       new Three.Vector4(
         index / sizeCount / 2.5,

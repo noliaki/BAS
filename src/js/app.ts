@@ -7,6 +7,8 @@ import { getByteFrequencyDataAverage, startConnect } from './AudioContext'
 
 startConnect()
 
+const reverseInterval: number = 3000
+const defaultDuration: number = 2
 const threeBase = new ThreeBase()
 const light = new Three.AmbientLight(0xffffff)
 const light2 = new Three.DirectionalLight(0xffffff)
@@ -32,36 +34,33 @@ if (process.env.NODE_ENV === 'development') {
 const stringToImageData = new StringToImageData()
 let reverseTimer: number | null = null
 
-const form: HTMLElement | null = document.getElementById('form')
-
-if (!form) {
-  throw new Error('`#form` is not found')
-}
-
 const timeline = {
   progress: 0
 }
+;(document.getElementById('form') as HTMLFormElement).addEventListener(
+  'submit',
+  async event => {
+    event.preventDefault()
 
-form.addEventListener('submit', async event => {
-  event.preventDefault()
+    const text: string = (document.getElementById(
+      'input-text'
+    ) as HTMLInputElement).value
 
-  const inputEl: HTMLElement | null = document.getElementById('input-text')
+    if (!text) return
 
-  if (!inputEl) return
+    timerStop()
 
-  const text: string = (inputEl as HTMLInputElement).value
-  timerStop()
+    if (timeline.progress !== 0) {
+      await reverseProgress(1)
+    }
 
-  if (timeline.progress !== 0) {
-    await reverseProgress(1)
+    const { width, height, position } = stringToImageData.drawText(text)
+    particle.setEndPosition(position, width, height)
+    particle.strLen = text.length
+    await forwardsProgress()
+    timerStart()
   }
-
-  const { width, height, position } = stringToImageData.drawText(text)
-  particle.setEndPosition(position, width, height)
-  particle.strLen = text.length
-  await forwardsProgress()
-  timerStart()
-})
+)
 
 loop()
 
@@ -72,7 +71,7 @@ function loop() {
   requestAnimationFrame(loop)
 }
 
-function forwardsProgress(duration: number = 2): Promise<void> {
+function forwardsProgress(duration: number = defaultDuration): Promise<void> {
   return new Promise((resolve: () => void): void => {
     TweenLite.to(timeline, duration, {
       progress: 1,
@@ -87,7 +86,7 @@ function forwardsProgress(duration: number = 2): Promise<void> {
   })
 }
 
-function reverseProgress(duration: number = 2): Promise<void> {
+function reverseProgress(duration: number = defaultDuration): Promise<void> {
   return new Promise((resolve: () => void): void => {
     TweenLite.to(timeline, duration, {
       progress: 0,
@@ -111,7 +110,7 @@ function timerStart(): void {
 
   reverseTimer = window.setTimeout((): void => {
     reverseProgress(2)
-  }, 3000)
+  }, reverseInterval)
 }
 
 function timerStop(): void {
