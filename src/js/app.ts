@@ -3,11 +3,11 @@ import ThreeBase from './ThreeBase'
 import Particle from './Particle'
 import { TweenLite, Power0 } from 'gsap/all'
 import StringToImageData from './StringToImageData'
-import { getByteFrequencyDataAverage, startConnect } from './AudioContext'
+import { getByteFrequencyDataAverage } from './AudioContext'
 import EventEmitter, { EventName } from './EventEmitter'
-import './SpeechRecognition'
+import SpeechRecognitionInit from './SpeechRecognition'
 
-startConnect()
+SpeechRecognitionInit()
 
 const reverseInterval: number = 3000
 const defaultDuration: number = 2

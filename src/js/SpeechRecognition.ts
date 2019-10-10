@@ -1,34 +1,52 @@
 import EventEmitter, { EventName } from './EventEmitter'
+import { startConnect } from './AudioContext'
 
-const recognition: SpeechRecognition = new (window.SpeechRecognition ||
-  (window as any).webkitSpeechRecognition)()
-
+const recognizingClassName: string = 'is-recognizing'
 const $speechBtn: HTMLButtonElement = document.getElementById(
   'speech'
 ) as HTMLButtonElement
-const recognizingClassName: string = 'is-recognizing'
+let recognition: SpeechRecognition
 let isRecognizing: boolean = false
+let doneInit: boolean = false
 
-recognition.lang = navigator.language || 'ja'
-recognition.addEventListener('result', onResult, false)
-recognition.addEventListener('start', onStart, false)
-recognition.addEventListener('end', onEnd, false)
-recognition.addEventListener('error', onError, false)
+export default function init(): void {
+  if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+    ;($speechBtn.parentNode as Node).removeChild($speechBtn)
+    return
+  }
 
-$speechBtn.addEventListener(
-  'click',
-  (event: MouseEvent): void => {
-    event.preventDefault()
-    event.stopPropagation()
+  $speechBtn.addEventListener(
+    'click',
+    (event: MouseEvent): void => {
+      event.preventDefault()
+      event.stopPropagation()
 
-    if (isRecognizing) {
-      recognition.stop()
-    } else {
-      recognition.start()
-    }
-  },
-  false
-)
+      if (!doneInit) {
+        doneInit = true
+        setUpRecognition()
+        startConnect()
+      }
+
+      if (isRecognizing) {
+        recognition.stop()
+      } else {
+        recognition.start()
+      }
+    },
+    false
+  )
+}
+
+function setUpRecognition(): void {
+  recognition = new (window.SpeechRecognition ||
+    (window as any).webkitSpeechRecognition)()
+
+  recognition.lang = navigator.language || 'ja-JP'
+  recognition.addEventListener('result', onResult, false)
+  recognition.addEventListener('start', onStart, false)
+  recognition.addEventListener('end', onEnd, false)
+  recognition.addEventListener('error', onError, false)
+}
 
 function onResult(event: Event): void {
   const text: string = (event as any).results[0][0].transcript

@@ -62,7 +62,15 @@ export default class Particle extends Three.Mesh {
 
     geometry.createAttribute('aStartPosition', 3, (data): void => {
       const position = getRandomPointOnSphere(Math.random() * 5000)
+      new Three.Vector3(position.x, position.y, position.z).toArray(data)
+    })
 
+    geometry.createAttribute('aControl0', 3, (data): void => {
+      new Three.Vector3(0, 0, 0).toArray(data)
+    })
+
+    geometry.createAttribute('aStartPosition', 3, (data): void => {
+      const position = getRandomPointOnSphere(Math.random() * 5000)
       new Three.Vector3(position.x, position.y, position.z).toArray(data)
     })
 

@@ -72,7 +72,7 @@
         font-size: 1.2rem;
         margin-left: 10px;
         box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.8);
-        transition: background-color 300ms linear;
+        transition: background-color 300ms linear, transform 300ms ease;
       }
 
       #speech:hover {
@@ -81,6 +81,7 @@
 
       #speech.is-recognizing {
         background-color: #ed64a6;
+        transform: scale(1.1);
       }
     </style>
   </head>
