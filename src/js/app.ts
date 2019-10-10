@@ -52,6 +52,8 @@ EventEmitter.on(
       inputEl.value = text
     }
 
+    location.hash = text
+
     timerStop()
 
     if (timeline.progress !== 0) {
