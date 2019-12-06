@@ -11,7 +11,7 @@ export default class ThreeBase {
   public controls: OrbitControls
   public timerId: number | null
 
-  constructor() {
+  constructor({ initText }: { initText: string }) {
     this.timerId = null
     this.scene = new Three.Scene()
     this.camera = new Three.PerspectiveCamera(
@@ -21,7 +21,7 @@ export default class ThreeBase {
       20000
     )
     this.camera.lookAt(this.scene.position)
-    this.camera.position.z = 1000
+    this.camera.position.z = Math.min(10000, 1000 * (initText.length || 1))
 
     this.renderer = new Three.WebGLRenderer({
       canvas: document.getElementById('app') as HTMLCanvasElement,

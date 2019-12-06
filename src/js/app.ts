@@ -9,12 +9,12 @@ import SpeechRecognitionInit from './SpeechRecognition'
 
 SpeechRecognitionInit()
 
+const initText: string = location.hash.replace(/^#/, '')
 const reverseInterval: number = 3000
 const defaultDuration: number = 2
-const threeBase = new ThreeBase()
+const threeBase = new ThreeBase({ initText })
 const light = new Three.AmbientLight(0xffffff)
 const light2 = new Three.DirectionalLight(0xffffff)
-const initText: string = location.hash.replace(/^#/, '')
 // light.position.x = 1000
 light.position.y = -1000
 light.position.z = 1000
