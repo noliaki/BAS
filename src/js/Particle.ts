@@ -30,19 +30,10 @@ export default class Particle extends Three.Mesh {
 
     geometry.createAttribute('aStagger', 4, (data): void => {
       new Three.Vector4(
-        Math.random() * 360,
-        Math.random() * 360,
-        Three.Math.randFloat(5, 15),
-        Three.Math.randFloat(100, 1000)
-      ).toArray(data)
-    })
-
-    geometry.createAttribute('aColor', 4, (data, index, sizeCount): void => {
-      new Three.Vector4(
-        index / sizeCount / 2.5,
-        0.66,
-        0.98,
-        Math.random()
+        Math.random(),
+        Math.random(),
+        Math.random(),
+        Three.Math.randFloat(1, 2)
       ).toArray(data)
     })
 

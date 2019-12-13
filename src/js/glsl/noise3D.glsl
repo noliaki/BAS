@@ -1,17 +1,3 @@
-uniform float uTime;
-uniform float uProgress;
-uniform float uLoudness;
-uniform float uStrLen;
-attribute vec2 aDelayDuration;
-attribute vec3 aStartPosition;
-attribute vec3 aControl0;
-attribute vec3 aEndPosition;
-attribute vec4 aAxisAngle;
-attribute vec4 aStagger;
-attribute vec4 aScale;
-attribute vec4 aStaggerTime;
-const float width = 1500.0;
-
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
 //               noise functions.
@@ -36,11 +22,13 @@ vec4 permute(vec4 x) {
      return mod289(((x*34.0)+1.0)*x);
 }
 
-vec4 taylorInvSqrt(vec4 r) {
+vec4 taylorInvSqrt(vec4 r)
+{
   return 1.79284291400159 - 0.85373472095314 * r;
 }
 
-float snoise(vec3 v) {
+float snoise(vec3 v)
+  {
   const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
   const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
 
@@ -110,12 +98,6 @@ float snoise(vec3 v) {
 // Mix final noise value
   vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
   m = m * m;
-
-  return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
-}
-
-vec3 hsv(float h, float s, float v){
-  vec4 t = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-  vec3 p = abs(fract(vec3(h) + t.xyz) * 6.0 - vec3(t.w));
-  return v * mix(vec3(t.x), clamp(p - vec3(t.x), 0.0, 1.0), s);
-}
+  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
+                                dot(p2,x2), dot(p3,x3) ) );
+  }
