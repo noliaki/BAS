@@ -14,7 +14,7 @@ export interface PointData {
 
 export function getPointFromImage(
   image: HTMLImageElement | HTMLCanvasElement
-): PointData[] | void {
+): PointData[] {
   const canvas: HTMLCanvasElement = document.createElement('canvas')
   const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
@@ -22,8 +22,10 @@ export function getPointFromImage(
     throw new Error('can not get context')
   }
 
-  const imageWidth: number = image.width
-  const imageHeight: number = image.height
+  const imageWidth: number =
+    image instanceof HTMLImageElement ? image.naturalWidth : image.width
+  const imageHeight: number =
+    image instanceof HTMLImageElement ? image.naturalHeight : image.height
 
   canvas.width = imageWidth
   canvas.height = imageHeight
@@ -37,29 +39,32 @@ export function getPointFromImage(
     imageHeight
   )
   const data: Uint8ClampedArray = imageData.data
-  const step: number = 7
+  const step = 1
 
   const pointData: PointData[] = []
 
-  for (let y: number = 0; y < imageHeight; y += step) {
-    for (let x: number = 0; x < imageWidth; x += step) {
+  for (let y = 0; y < imageHeight; y += step) {
+    for (let x = 0; x < imageWidth; x += step) {
       const index: number = (imageWidth * y + x) * 4
-      const positionX: number = (x * 2 - imageWidth) / imageWidth
-      const positionY: number = (y * 2 - imageHeight) / imageHeight
-      const r: number = data[index + 0] / 255
-      const g: number = data[index + 1] / 255
-      const b: number = data[index + 2] / 255
-      const a: number = 1
+      const a: number = data[index + 3] / 255
 
-      pointData.push({
-        x: positionX,
-        y: -positionY,
-        z: (r + g + b) / 3 / 2,
-        r,
-        g,
-        b,
-        a
-      })
+      if (a > 0) {
+        const positionX: number = (x * 2 - imageWidth) / imageWidth
+        const positionY: number = (y * 2 - imageHeight) / imageHeight
+        const r: number = data[index + 0] / 255
+        const g: number = data[index + 1] / 255
+        const b: number = data[index + 2] / 255
+
+        pointData.push({
+          x: positionX,
+          y: -positionY,
+          z: (r + g + b) / 3 / 2,
+          r,
+          g,
+          b,
+          a,
+        })
+      }
     }
   }
 

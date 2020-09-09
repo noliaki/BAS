@@ -1,20 +1,24 @@
 import * as Three from 'three'
 import ThreeBase from './ThreeBase'
 import Particle from './Particle'
-import { TweenLite, Power0 } from 'gsap/all'
+import { gsap } from 'gsap'
 import StringToImageData from './StringToImageData'
 import { getByteFrequencyDataAverage } from './AudioContext'
 import EventEmitter, { EventName } from './EventEmitter'
 import SpeechRecognitionInit from './SpeechRecognition'
+import { loadImage, getPointFromImage, PointData } from './helper'
 
 SpeechRecognitionInit()
 
 const initText: string = location.hash.replace(/^#/, '')
-const reverseInterval: number = 3000
-const defaultDuration: number = 2
+const reverseInterval = 5000
+const defaultDuration = 2
 const threeBase = new ThreeBase({ initText })
 const light = new Three.AmbientLight(0xffffff)
 const light2 = new Three.DirectionalLight(0xffffff)
+const fileInput: HTMLInputElement | null = document.querySelector('#file-input')
+const fileReader: FileReader = new FileReader()
+
 // light.position.x = 1000
 light.position.y = -1000
 light.position.z = 1000
@@ -38,7 +42,7 @@ const stringToImageData = new StringToImageData()
 let reverseTimer: number | null = null
 
 const timeline = {
-  progress: 0
+  progress: 0,
 }
 
 const inputEl: HTMLInputElement = document.getElementById(
@@ -80,6 +84,53 @@ EventEmitter.on(
   }
 )
 
+fileReader.addEventListener(
+  'load',
+  async (event: Event): Promise<void> => {
+    if (fileInput) {
+      fileInput.value = ''
+    }
+
+    const img: HTMLImageElement = await loadImage(
+      (event?.target as any)?.result
+    )
+    const pointData: PointData[] = getPointFromImage(img)
+
+    for (let i: number = pointData.length - 1; i >= 0; i--) {
+      const r: number = Math.floor(Math.random() * (i + 1))
+      const t: PointData = pointData[i]
+      pointData[i] = pointData[r]
+      pointData[r] = t
+    }
+
+    timerStop()
+
+    if (timeline.progress !== 0) {
+      await reverseProgress(1)
+    }
+
+    particle.setEndColor(pointData)
+    particle.setEndPosition(pointData, img.naturalWidth, img.naturalHeight)
+    particle.uIsImage = true
+
+    await forwardsProgress()
+    timerStart()
+  }
+)
+
+if (fileInput) {
+  fileInput.addEventListener('change', (event: Event): void => {
+    const file: File | undefined = (event?.target as HTMLInputElement)
+      ?.files?.[0]
+
+    if (!file || !/^image\//.test(file.type)) {
+      return
+    }
+
+    fileReader.readAsDataURL(file)
+  })
+}
+
 loop()
 
 if (initText) {
@@ -96,30 +147,32 @@ function loop() {
 
 function forwardsProgress(duration: number = defaultDuration): Promise<void> {
   return new Promise((resolve: () => void): void => {
-    TweenLite.to(timeline, duration, {
+    gsap.to(timeline, {
+      duration,
       progress: 1,
-      ease: Power0.easeNone,
+      ease: 'none',
       onUpdate(): void {
         updateParticleProgress()
       },
       onComplete(): void {
         resolve()
-      }
+      },
     })
   })
 }
 
 function reverseProgress(duration: number = defaultDuration): Promise<void> {
   return new Promise((resolve: () => void): void => {
-    TweenLite.to(timeline, duration, {
+    gsap.to(timeline, {
+      duration,
       progress: 0,
-      ease: Power0.easeNone,
+      ease: 'none',
       onUpdate(): void {
         updateParticleProgress()
       },
       onComplete(): void {
         resolve()
-      }
+      },
     })
   })
 }
@@ -131,8 +184,9 @@ function updateParticleProgress(): void {
 function timerStart(): void {
   timerStop()
 
-  reverseTimer = window.setTimeout((): void => {
-    reverseProgress(2)
+  reverseTimer = window.setTimeout(async (): Promise<void> => {
+    await reverseProgress(2)
+    particle.uIsImage = false
   }, reverseInterval)
 }
 
