@@ -6,9 +6,9 @@ export interface Position {
 export default class StringToImageData {
   private canvas: HTMLCanvasElement
   private context: CanvasRenderingContext2D | null
-  private text: string = ''
-  private fontSize: number = 50
-  private fontFamily: string = 'serif'
+  private text = ''
+  private fontSize = 50
+  private fontFamily = 'serif'
   private textBaseline: CanvasTextBaseline = 'top'
 
   constructor() {
@@ -60,7 +60,7 @@ export default class StringToImageData {
     return {
       width: this.canvas.width,
       height: this.canvas.height,
-      position: this.getPosition()
+      position: this.getPosition(),
     }
   }
 
@@ -82,11 +82,11 @@ export default class StringToImageData {
     const height: number = this.canvas.height
     const data: Uint8ClampedArray = this.getImageDate().data
     const dataLen: number = data.length
-    const step: number = 1
+    const step = 1
 
     const position: Position[] = []
 
-    for (let i: number = 0; i < dataLen; i += 4 * step) {
+    for (let i = 0; i < dataLen; i += 4 * step) {
       const a: number = data[i + 3]
 
       if (a === 0) continue
@@ -96,7 +96,7 @@ export default class StringToImageData {
 
       position.push({
         x: (x * 2 - width) / width,
-        y: -(y * 2 - height) / height
+        y: -(y * 2 - height) / height,
       })
     }
 
